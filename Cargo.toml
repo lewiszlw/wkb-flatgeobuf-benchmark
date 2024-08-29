@@ -1,0 +1,25 @@
+[package]
+name = "wkb-flatgeobuf-benchmark"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+geos = { version = "8.3", features = ["v3_10_0"]}
+geozero = { version = "0.13", features = ["with-wkb", "with-geos"] }
+flatgeobuf = "4.3"
+criterion = { version = "0.5", features = ["async_tokio"] }
+
+[[bench]]
+name = "wkb"
+path = "benches/wkb.rs"
+harness = false
+
+[[bench]]
+name = "ewkb"
+path = "benches/ewkb.rs"
+harness = false
+
+[[bench]]
+name = "fgb"
+path = "benches/fgb.rs"
+harness = false
