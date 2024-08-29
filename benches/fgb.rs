@@ -2,7 +2,7 @@ use std::io::{BufReader, BufWriter};
 
 use criterion::{criterion_group, criterion_main, Criterion};
 use flatgeobuf::{FgbReader, FgbWriter, GeometryType};
-use geos::Geom;
+use geos::{Geom, GeometryTypes};
 use geozero::wkt::WktReader;
 use geozero::GeozeroDatasource;
 
@@ -14,12 +14,14 @@ async fn parse_fgb(fgb: &[u8]) {
     let mut geos_writer = geozero::geos::GeosWriter::new();
     feature_iter.process(&mut geos_writer).unwrap();
     let geos0 = geos_writer.geometry();
+    assert_eq!(geos0.geometry_type(), GeometryTypes::Polygon);
 
     let fgb_reader = FgbReader::open(fgb).unwrap();
     let mut feature_iter = fgb_reader.select_all_seq().unwrap();
     let mut geos_writer = geozero::geos::GeosWriter::new();
     feature_iter.process(&mut geos_writer).unwrap();
     let geos1 = geos_writer.geometry();
+    assert_eq!(geos1.geometry_type(), GeometryTypes::Polygon);
 
     geos0.intersects(geos1).unwrap();
 }

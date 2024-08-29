@@ -1,5 +1,5 @@
 use criterion::{criterion_group, criterion_main, Criterion};
-use geos::Geom;
+use geos::{Geom, GeometryTypes};
 use geozero::wkb::{FromWkb, WkbDialect};
 use geozero::{CoordDimensions, ToWkb};
 
@@ -8,9 +8,11 @@ mod data;
 async fn parse_wkb(wkb: &[u8]) {
     let mut rdr = std::io::Cursor::new(&wkb[..]);
     let geos0 = geos::Geometry::from_wkb(&mut rdr, WkbDialect::Wkb).unwrap();
+    assert_eq!(geos0.geometry_type(), GeometryTypes::Polygon);
 
     let mut rdr = std::io::Cursor::new(&wkb[..]);
     let geos1 = geos::Geometry::from_wkb(&mut rdr, WkbDialect::Wkb).unwrap();
+    assert_eq!(geos1.geometry_type(), GeometryTypes::Polygon);
 
     geos0.intersects(&geos1).unwrap();
 }
